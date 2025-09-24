@@ -11,4 +11,10 @@ public interface UserService {
     List<Person> getAllPerson();
 
     Person insertNewUser(PersonRequest personRequest);
+
+    Person updateUser(Long id, PersonRequest updateInfo);
+
+    Person getPersonById(Long id);
+
+    Person deleteUser(Long id);
 }

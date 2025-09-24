@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClient;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,6 +33,19 @@ public class PersonController {
         return ResponseEntity.ok(response);
     }
 
+    // get user by id
+    @Operation(summary = "Get user by id")
+    @GetMapping("/{id}")
+    ResponseEntity<ApiResponse<Person>> getPersonById(@PathVariable Long id){
+        ApiResponse<Person> response = ApiResponse.<Person>builder()
+                .message("successfully get person by their id")
+                .payload(userService.getPersonById(id))
+                .status(HttpStatus.OK)
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
     // post user
     @Operation(summary = "post user")
     @PostMapping
@@ -46,8 +60,28 @@ public class PersonController {
     }
 
     // update user
-
+    @Operation(summary = "Update user")
+    @PutMapping("/{id}")
+    ResponseEntity<ApiResponse<Person>> updatePerson(@RequestBody PersonRequest updateInfo, @PathVariable Long id) {
+        ApiResponse<Person> response = ApiResponse.<Person>builder()
+                .message("Update person info successfully")
+                .payload(userService.updateUser(id, updateInfo))
+                .status(HttpStatus.OK)
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.ok(response);
+    }
 
     // delete user
-
+    @Operation(summary = "delete user by id")
+    @DeleteMapping("/{id}")
+    ResponseEntity<ApiResponse<Person>> deletePersonById(@PathVariable Long id) {
+        ApiResponse<Person> response = ApiResponse.<Person>builder()
+                .message("delete user successfully")
+                .payload(userService.deleteUser(id))
+                .status(HttpStatus.OK)
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.ok(response);
+    }
 }

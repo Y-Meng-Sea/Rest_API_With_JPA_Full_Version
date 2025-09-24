@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -42,5 +43,38 @@ public class UserServiceImp implements UserService {
         }
 
         return userRepository.save(newPerson);
+    }
+
+    @Override
+    public Person getPersonById(Long id){
+        Optional<Person> person = userRepository.findById(id);
+        return person.orElse(null);
+    }
+
+    @Override
+    public Person deleteUser(Long id) {
+        Optional<Person> person = userRepository.findById(id); // find and store for show
+        userRepository.deleteById(id); // delete
+        return person.orElse(null); // show
+    }
+
+    @Override
+    public Person updateUser(Long id, PersonRequest updateInfo) {
+        Optional<Person> person = userRepository.findById(id);
+        if(person.isPresent()){
+            Person updatePerson = person.get();
+            updatePerson.setFirstName(updateInfo.getFirstName());
+            updatePerson.setLastName(updateInfo.getLastName());
+            updatePerson.setEmail(updateInfo.getEmail());
+            if(updateInfo.getPassportRequest() != null){
+                updatePerson.getPassport().setName(updateInfo.getPassportRequest().getName());
+                updatePerson.getPassport().setNationality(updateInfo.getPassportRequest().getNationality());
+                updatePerson.getPassport().setCountry(updateInfo.getPassportRequest().getCountry());
+                updatePerson.getPassport().setExpirationDate(updateInfo.getPassportRequest().getExpirationDate());
+                updatePerson.getPassport().setGender(updateInfo.getPassportRequest().getGender());
+            }
+            return userRepository.save(updatePerson);
+        }
+        return   null;
     }
 }
